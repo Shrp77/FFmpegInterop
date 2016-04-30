@@ -20,6 +20,7 @@ using FFmpegInterop;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -78,6 +79,13 @@ namespace MediaPlayerCS
 					// Instantiate FFmpegInteropMSS using the opened local file stream
                     FFmpegMSS = FFmpegInteropMSS.CreateFFmpegInteropMSSFromStream(readStream, forceDecodeAudio, forceDecodeVideo);
                     MediaStreamSource mss = FFmpegMSS.GetMediaStreamSource();
+
+                    var chapters = FFmpegMSS.GetChapterMetadata();
+
+                    foreach (var chapter in chapters)
+                    {
+                        Debug.WriteLine("{0} : {1} ({2} :: {3})", chapter.GetChapter(), chapter.GetTitle(), chapter.GetStartTime(), chapter.GetEndTime());
+                    }
 
                     if (mss != null)
                     {

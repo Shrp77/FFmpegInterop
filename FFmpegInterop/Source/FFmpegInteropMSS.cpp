@@ -28,6 +28,7 @@
 extern "C"
 {
 #include <libavutil/imgutils.h>
+#include <libavutil/avstring.h>
 }
 
 using namespace concurrency;
@@ -123,6 +124,47 @@ FFmpegInteropMSS^ FFmpegInteropMSS::CreateFFmpegInteropMSSFromUri(String^ uri, b
 MediaStreamSource^ FFmpegInteropMSS::GetMediaStreamSource()
 {
 	return mss;
+}
+
+IVector<AVChapterInfo^>^ FFmpegInteropMSS::GetChapterMetadata()
+{
+	Vector<AVChapterInfo^>^ chapters = ref new Vector<AVChapterInfo^>();
+
+	for (int i = 0; i < avFormatCtx->nb_chapters; i++)
+	{
+		AVChapter* chapter = avFormatCtx->chapters[i];
+		AVChapterInfo^ info = ref new AVChapterInfo();
+		info->SetChapter(i);
+		info->SetStartTime(chapter->start * av_q2d(chapter->time_base));
+		info->SetEndTime(chapter->end * av_q2d(chapter->time_base));
+
+		AVDictionaryEntry* tag = NULL;
+		while((tag = av_dict_get(chapter->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
+		{
+			if(strcmp("title", tag->key) == 0)
+			{
+				const char* p = tag->value;
+				while(*p)
+				{
+					char tmp[256];
+					size_t len = strcspn(p, "\x8\xa\xb\xc\xd");
+					unsigned int actual = FFMIN(sizeof(tmp), len + 1);
+					av_strlcpy(tmp, p, actual);
+
+					std::string s_str = std::string(tmp);
+					std::wstring w_str = std::wstring(s_str.begin(), s_str.end());
+					const wchar_t* w_char = w_str.c_str();
+
+					info->SetTitle(ref new String(w_char));
+					break;
+				}
+			}
+		}
+
+		chapters->Append(info);
+	}
+
+	return chapters;
 }
 
 HRESULT FFmpegInteropMSS::CreateMediaStreamSource(String^ uri, bool forceAudioDecode, bool forceVideoDecode, PropertySet^ ffmpegOptions)
@@ -602,3 +644,4 @@ static int64_t FileStreamSeek(void* ptr, int64_t pos, int whence)
 
 	return out.QuadPart; // Return the new position:
 }
+

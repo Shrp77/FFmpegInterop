@@ -15,6 +15,7 @@
     <ClCompile Include="..\..\Source\MediaSampleProvider.cpp" />
     <ClCompile Include="..\..\Source\UncompressedAudioSampleProvider.cpp" />
     <ClCompile Include="..\..\Source\UncompressedVideoSampleProvider.cpp" />
+    <ClCompile Include="AVChapterInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -25,5 +26,6 @@
     <ClInclude Include="..\..\Source\MediaSampleProvider.h" />
     <ClInclude Include="..\..\Source\UncompressedAudioSampleProvider.h" />
     <ClInclude Include="..\..\Source\UncompressedVideoSampleProvider.h" />
+    <ClInclude Include="AVChapterInfo.h" />
   </ItemGroup>
 </Project>

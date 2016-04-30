@@ -20,11 +20,13 @@
 #include <queue>
 #include "MediaSampleProvider.h"
 #include "FFmpegReader.h"
+#include "AVChapterInfo.h"
 
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Media::Core;
+using namespace Platform::Collections;
 
 extern "C"
 {
@@ -43,6 +45,7 @@ namespace FFmpegInterop
 
 		// Contructor
 		MediaStreamSource^ GetMediaStreamSource();
+		IVector<AVChapterInfo^>^ GetChapterMetadata();
 		virtual ~FFmpegInteropMSS();
 
 	internal:

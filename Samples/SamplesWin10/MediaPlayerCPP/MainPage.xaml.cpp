@@ -44,6 +44,8 @@ using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
+using namespace Platform::Collections;
+
 MainPage::MainPage()
 {
 	InitializeComponent();
@@ -81,6 +83,13 @@ void MainPage::OpenLocalFile(Platform::Object^ sender, Windows::UI::Xaml::Routed
 					if (FFmpegMSS != nullptr)
 					{
 						MediaStreamSource^ mss = FFmpegMSS->GetMediaStreamSource();
+
+						IVector<FFmpegInterop::AVChapterInfo^>^ chapters = FFmpegMSS->GetChapterMetadata();
+
+						for(auto&& chapter : chapters)
+						{
+
+						}
 
 						if (mss)
 						{
